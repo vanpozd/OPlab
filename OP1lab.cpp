@@ -1,43 +1,85 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "Streamlab.h"
 
 int main() 
 {
-	std::cout<<"Введіть назфу файлу який треба зашифрувати: ";
-	std::string filename;
-	std::getline(std::cin, filename);
-    std::string outputFileName = "output.txt";
-    std::string line;
-
-    // Відкриття вхідного файлу для зчитування
-    std::ifstream inputFile(filename);
-
-    // Перевірка, чи відкрився файл
-    if (!inputFile.is_open()) {
-        std::cerr << "Помилка відкриття файлу " << inputFileName << std::endl;
-        return 1;
+    FILE* fpointer;
+    char chartoencrypt;
+	std::string infilename, outfilename, outputText, paroutputText;
+    cout << "Введіть назфу файлу який треба зашифрувати: ";
+	std::getline(std::cin, infilename);
+	outfilename = "encrypted" + infilename;
+    //open infile
+    std::ifstream inputFile(infilename);
+	if (!inputFile.is_open()) 
+    {
+        std::cout << "В створених файлах не знайдено файлу з імʼям: " << infilename << std::endl;
+        std::ofstream inputFile(infilename);
+        if (!inputFile.is_open()) 
+        {
+            std::cout << "[ERROR] Помилка при створенні файлу: " << infilename << std::endl;
+		}
+        else
+        {
+            std::cout << "Створено файл з імʼям: " << infilename << std::endl;
+        }
     }
 
-    // Відкриття вихідного файлу для запису
-    std::ofstream outputFile(outputFileName);
-
-    // Перевірка, чи відкрився файл
-    if (!outputFile.is_open()) {
-        std::cerr << "Помилка відкриття файлу " << outputFileName << std::endl;
-        return 1;
+    //open outfile
+    std::ofstream outputFile(outfilename);
+	if (!inputFile.is_open()) 
+    {
+        std::cout << "В створених файлах не знайдено файлу з імʼям: " << outfilename << std::endl;
+        std::ofstream outputFile(outfilename);
+        if (!inputFile.is_open()) 
+        {
+            std::cout << "[ERROR] Помилка при створенні файлу: " << outfilename << std::endl;
+		}
+        else
+        {
+            std::cout << "Створено файл з імʼям: " << outfilename << std::endl;
+        }
     }
 
-    // Зчитування тексту з вхідного файлу і запис у вихідний файл
-    while (getline(inputFile, line)) {
-        outputFile << line << std::endl;
+    // reading end encriptin file 
+    char c;
+    while (inputFile.get(c)) {
+        if ((int)c % 2 == 0) {
+            paroutputText = paroutputText + c;
+        }
+        else {
+            outputText = outputText + c;
+        }
     }
+    outputText = paroutputText + outputText; 
+    std::cout << outputText << std::endl;
 
-    // Закриття файлів
-    inputFile.close();
+    outputFile << outputText;
     outputFile.close();
+    
+    inputFile.close();
 
-    std::cout << "Текст було успішно скопійовано з файлу " << filename << " до файлу " << outputFileName << std::endl;
+    std::cout << "Текст було успішно зашифровано з файлу " << infilename << " до файлу " << outfilename << std::endl;
 
     return 0;
+}
+
+void openfileStream(string infilename)
+{	
+	std::ifstream inputFile(infilename);
+	if (!inputFile.is_open()) 
+    {
+        std::cout << "В створених файлах не знайдено файлу з імʼям: " << infilename << std::endl;
+        std::ofstream inputFile(infilename);
+        if (!inputFile.is_open()) 
+        {
+            std::cout << "[ERROR] Помилка при створенні файлу: " << infilename << std::endl;
+		}
+        else
+        {
+            std::cout << "Створено файл з імʼям: " << infilename << std::endl;
+        }
+    }
 }
