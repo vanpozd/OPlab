@@ -10,13 +10,13 @@ int main(int argc,char* argv[])
 {
 	std::string outputText, paroutputText, first_text;
     //open infile
-    if(strcmp(*argv, "FileStream"))
+    if(std::strcmp(argv[1], "FileStream") == 0)
     {
         std::string infilename, outfilename;
         std::cout << "Введіть назфу файлу який треба зашифрувати: " << std::endl;
     	std::getline(std::cin, infilename);
-        std::ifstream inputFile(infilename);
-        if (!inputFile.is_open()) 
+        std::ifstream rinputFile(infilename);
+        if (!rinputFile.is_open()) 
         {
             
             std::cout << "В створених файлах не знайдено файлу з імʼям: " << infilename << std::endl;
@@ -33,7 +33,8 @@ int main(int argc,char* argv[])
             }
         }
         //open outfile
-        inputFile.close();
+        rinputFile.close();
+        std::ifstream inputFile(infilename);
         outfilename = "encrypted" + infilename;
         std::ofstream outputFile(outfilename);
         if (!outputFile.is_open()) 
@@ -65,17 +66,19 @@ int main(int argc,char* argv[])
         std::cout << "Текст було успішно зашифровано з файлу " << infilename << " до файлу " << outfilename << std::endl;
         return 0;
     }
-    else if(strcmp(*argv, "FilePointer"))
+    else if(std::strcmp(argv[1], "FilePointer") == 0)
     {
+        FILE* rinpointer;
         FILE* inpointer;
         FILE* outpointer;
         char infilename[30];
         char outfilename[30] = "encrypted";
         std::cout << "Введіть назфу файлу який треба зашифрувати: " << std::endl;
         scanf("%s", infilename);
-        if ((inpointer = fopen(infilename, "r")) == NULL)
+        if ((rinpointer = fopen(infilename, "r")) == NULL)
         {
             std::cout << "Такго файлу не знайдено.\n" << std::endl;
+            fclose(rinpointer);
             if((inpointer = fopen(infilename, "a")) == NULL)
             {
                 std::cout << "[ERROR] Помилка при створенні файлу: " << infilename << std::endl;
@@ -88,8 +91,11 @@ int main(int argc,char* argv[])
                 fprintf(inpointer,"%s",text_buf);
             }
         }
-        fclose(inpointer);
-        FILE* inpointer;
+        else
+        {
+            fclose(rinpointer);
+            inpointer = fopen(infilename, "r");
+        }
         //open outfile
         strcat(outfilename, infilename);
         if((outpointer = fopen(outfilename, "a")) == NULL)
@@ -118,9 +124,12 @@ int main(int argc,char* argv[])
         fprintf(outpointer,"%s",text_buf);
         fclose(inpointer);
         fclose(outpointer);
+        return 0;
     }
     else
     {
+        printf("%s", argv[0]);
+        printf("%s", argv[1]);
         std::cout << "[ERROR] Такого моду не існує." << std::endl;
         return 1;
     }
