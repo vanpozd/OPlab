@@ -24,7 +24,7 @@ std::string input_encripting(std::string infilename)
 		}
 		else
 		{
-			std::cout << "Ведіть текст у файл:" << infilename << std::endl;
+			std::cout << "Ведіть текст у файл" << std::endl;
 			std::getline(std::cin, first_text);
 			inputFile << first_text;
 			inputFile.close();
