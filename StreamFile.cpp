@@ -54,9 +54,10 @@ std::string input_encripting(std::string infilename)
 	}
 	std::ifstream inputFile(infilename);
 	char c;
+	int i = 1;
 	while (inputFile.get(c)) 
 	{
-		if ((int)c % 2 == 0) 
+		if (i % 2 == 0) 
 		{
 			paroutputText = paroutputText + c;
 		}
@@ -64,6 +65,7 @@ std::string input_encripting(std::string infilename)
 		{
 			outputText = outputText + c;
 		}
+	i++;
 	}
 	outputText = paroutputText + outputText;
 	std::cout << "Текст після шифрування:" << outputText << std::endl;
