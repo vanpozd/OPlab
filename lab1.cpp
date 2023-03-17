@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		std::cout << "usage: ./OP1 FileStram or FilePointer" << std::endl;
+		std::cout << "usage: ./lab1 FileStram or FilePointer" << std::endl;
 		return 0;
 	}
 }
