@@ -11,8 +11,7 @@ int main(int argc, char* argv[])
 	if(std::strcmp(argv[1], "FileStream") == 0)
 	{
 		std::string infilename = input_filename();
-		std::string outputText = input_encripting(infilename);
-		output(infilename,outputText);
+		input_encripting(infilename);
 	}
 	else if(std::strcmp(argv[1], "FilePointer") == 0)
 	{	
