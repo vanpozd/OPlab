@@ -3,24 +3,19 @@
 #include <stdio.h>
 #include <string>
 
-char* point_infilename()
-{
-	char infilename[30];
-	std::cout << "Введіть назфу файлу який треба зашифрувати: " << std::endl;
-	scanf("%s", infilename);
-	return infilename;
-}
+char* point_infilename();
 
 std::string input_reader(char* infilename)
 {
 	std::string compline;
 	FILE* rinpointer;
 	FILE* inpointer;
-	char buftext[1000];
+	char buftext[100];
+	char fintext[1000];
 	char filefill[1000];
 	if ((rinpointer = fopen(infilename, "r")) == NULL)
 	{
-		std::cout << "Такго файлу не знайдено.\n" << std::endl;
+		std::cout << "Такго файлу не знайдено." << std::endl;
 		fclose(rinpointer);
 		if((inpointer = fopen(infilename, "a")) == NULL)
 		{
@@ -37,7 +32,7 @@ std::string input_reader(char* infilename)
 	}
 	else
 	{
-		do	//block that reads what's inside the file.
+		do
 		{
 			fgets(filefill, 200, rinpointer);
 			printf("Текст у файлі:\n%s", filefill);
@@ -48,10 +43,19 @@ std::string input_reader(char* infilename)
 		if(compline.compare("+") == 0)
 		{
 			inpointer = fopen(infilename, "a");
-			std::cout << "Ведіть текст у файл\n" << std::endl;
-			scanf("%s", buftext);
+			printf("Введіть текст (напишіть EXIT, щоб вийти):\n");
+			while (true) 
+			{
+				scanf("%s", buftext);
+				if (strcmp(buftext, "EXIT") == 0)
+				{
+					break;
+				}
+				// Виконуємо операції зі стрічкою, наприклад, вивід на екран:
+				strcat(fintext, buftext);
+			}
 			fseek(inpointer, 0, SEEK_END);
-			fprintf(inpointer,"%s",buftext);
+			fprintf(inpointer,"%s",fintext);
 			fclose(inpointer);
 		}
 	}
@@ -59,7 +63,7 @@ std::string input_reader(char* infilename)
 	std::string paroutputText, outputText;
 	char c;
 	while ((c = fgetc(inpointer)) != EOF) 
-	{ 
+	{
 		if (ftell(inpointer) % 2 == 0)
 		{
 			paroutputText = paroutputText + c;
@@ -90,4 +94,12 @@ void outout_printer(std::string outputText,char* infilename)
 	const char* text_buf = outputText.c_str();
 	fprintf(outpointer,"%s",text_buf);
 	fclose(outpointer);
+}
+
+char* point_infilename()
+{
+	char infilename[30];
+	std::cout << "Введіть назфу файлу який треба зашифрувати: " << std::endl;
+	scanf("%s", infilename);
+	return infilename;
 }
