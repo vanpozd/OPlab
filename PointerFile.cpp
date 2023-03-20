@@ -2,7 +2,9 @@
 #include <string.h>
 #include <stdio.h>
 #include <string>
+//#include "encripting.cpp"
 
+void output_printer(std::string,char*,char);
 char* point_infilename();
 
 std::string input_reader(char* infilename)
@@ -32,10 +34,11 @@ std::string input_reader(char* infilename)
 	}
 	else
 	{
+		printf("Текст у файлі:\n");
 		do
 		{
 			fgets(filefill, 200, rinpointer);
-			printf("Текст у файлі:\n%s", filefill);
+			printf("%s", filefill);
 		} while (!feof(rinpointer));
 		fclose(rinpointer);
 		std::cout << "\nЧи хочете ви додати текст до файлу перед шифруванням?(+/-)" << std::endl;
@@ -51,7 +54,6 @@ std::string input_reader(char* infilename)
 				{
 					break;
 				}
-				// Виконуємо операції зі стрічкою, наприклад, вивід на екран:
 				strcat(fintext, buftext);
 			}
 			fseek(inpointer, 0, SEEK_END);
@@ -59,8 +61,26 @@ std::string input_reader(char* infilename)
 			fclose(inpointer);
 		}
 	}
+	char b;
+	std::cout << "Введіть букву яку хочете прибрати з новогу файлу:" << std::endl;
+	std::cin >> b;
 	inpointer = fopen(infilename, "r");
 	std::string paroutputText, outputText;
+	do
+	{
+		fgets(filefill, 200, rinpointer);
+		paroutputText = encripting_pointer(filefill);
+		if(strlen(filefill) % 2 == 0)
+		{
+			output_printer(paroutputText,infilename,b);
+			outputText += paroutputText;
+		}
+		else
+		{
+			outputText += paroutputText;
+		}
+	} while (!feof(rinpointer));
+/*
 	char c;
 	while ((c = fgetc(inpointer)) != EOF) 
 	{
@@ -75,27 +95,40 @@ std::string input_reader(char* infilename)
 	}
 	outputText = paroutputText + outputText;
 	std::cout << "Текст після шифрування:" << outputText << std::endl;
+*/
 	return outputText;
 }
 
-void outout_printer(std::string outputText,char* infilename)
+void output_printer(std::string outputText,char* infilename,char b)
 {
 	FILE* outpointer;
 	char outfilename[30] = "encrypted";
+	char fincout[200];
+	char outputFinal[200];
+	int j = 0;
 	strcat(outfilename, infilename);
-	if((outpointer = fopen(outfilename, "a")) == NULL)
-	{
-		std::cout << "[ERROR] Помилка при створенні файлу: " << infilename << std::endl;
-	}
-	else
-	{
-		std::cout << "Вихідний файл: " << outfilename << std::endl;
-	}
+	outpointer = fopen(outfilename, "a");
 	const char* text_buf = outputText.c_str();
-	fprintf(outpointer,"%s",text_buf);
+	strcpy(fincout,text_buf);
+	for(int i = 0; i < strlen(fincout);i++)
+	{
+		if(fincout[i] != b)
+		{
+			outputFinal[j] = fincout[i];
+			j++;
+		}
+	}
+	fprintf(outpointer,"%s",outputFinal);
 	fclose(outpointer);
 }
-
+void final_point(std::string outputText, char* infilename)
+{
+	FILE* outputPoint;
+	outputPoint = fopen(infilename, "w");
+	const char* text_buf = outputText.c_str();
+	fprintf(outputPoint,"%s",text_buf);
+	fclose(outputPoint);
+}
 char* point_infilename()
 {
 	char infilename[30];
