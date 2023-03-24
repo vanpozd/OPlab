@@ -2,10 +2,13 @@
 #include <string.h>
 #include <stdio.h>
 #include <string>
-//#include "encripting.cpp"
 
-void output_printer(std::string,char*,char);
+
+void output_printer(std::string,char*,char,int);
 char* point_infilename();
+int point_file_reader(char* );
+void point_file_filler(char*);
+char point_char_taker();
 
 std::string input_reader(char* infilename)
 {
@@ -15,111 +18,117 @@ std::string input_reader(char* infilename)
 	char buftext[100];
 	char fintext[1000];
 	char filefill[1000];
-	if ((rinpointer = fopen(infilename, "r")) == NULL)
+	if ((inpointer = fopen(infilename, "r")) == NULL)
 	{
 		std::cout << "Такго файлу не знайдено." << std::endl;
-		fclose(rinpointer);
-		if((inpointer = fopen(infilename, "a")) == NULL)
-		{
-			std::cout << "[ERROR] Помилка при створенні файлу" << std::endl;
-		}
-		else
-		{
-			std::cout << "Ведіть текст у файл" << std::endl;
-			scanf("%s", buftext);
-			fseek(inpointer, 0, SEEK_SET);
-			fprintf(inpointer,"%s",buftext);
-			fclose(inpointer);
-		}
+		fclose(inpointer);
+		point_file_filler(infilename);
 	}
 	else
 	{
-		printf("Текст у файлі:\n");
-		do
+		if(point_file_reader(infilename) == 0)
 		{
-			fgets(filefill, 200, rinpointer);
-			printf("%s", filefill);
-		} while (!feof(rinpointer));
-		fclose(rinpointer);
-		std::cout << "\nЧи хочете ви додати текст до файлу перед шифруванням?(+/-)" << std::endl;
-		std::cin >> compline;
-		if(compline.compare("+") == 0)
-		{
-			inpointer = fopen(infilename, "a");
-			printf("Введіть текст (напишіть EXIT, щоб вийти):\n");
-			while (true) 
-			{
-				scanf("%s", buftext);
-				if (strcmp(buftext, "EXIT") == 0)
-				{
-					break;
-				}
-				strcat(fintext, buftext);
-			}
-			fseek(inpointer, 0, SEEK_END);
-			fprintf(inpointer,"%s",fintext);
-			fclose(inpointer);
+			point_file_filler(infilename);
 		}
 	}
-	char b;
-	std::cout << "Введіть букву яку хочете прибрати з новогу файлу:" << std::endl;
-	std::cin >> b;
+	char b = point_char_taker();
+	int line_num = 0;
 	inpointer = fopen(infilename, "r");
 	std::string paroutputText, outputText;
 	do
 	{
-		fgets(filefill, 200, rinpointer);
+		fgets(filefill, 200, inpointer);
 		paroutputText = encripting_pointer(filefill);
-		if(strlen(filefill) % 2 == 0)
+		std::cout << paroutputText.length();
+		if((paroutputText.length()-1) % 2 == 0)
 		{
-			output_printer(paroutputText,infilename,b);
+			output_printer(paroutputText,infilename,b,line_num);
+			outputText += paroutputText;
+			line_num++;
+		}
+		else if(((paroutputText.length()-1) % 2 < 0) || ((paroutputText.length()-1) % 2 > 0))
+		{
 			outputText += paroutputText;
 		}
-		else
-		{
-			outputText += paroutputText;
-		}
-	} while (!feof(rinpointer));
-/*
-	char c;
-	while ((c = fgetc(inpointer)) != EOF) 
-	{
-		if (ftell(inpointer) % 2 == 0)
-		{
-			paroutputText = paroutputText + c;
-		}
-		else 
-		{
-			outputText = outputText + c;
-		}
-	}
-	outputText = paroutputText + outputText;
-	std::cout << "Текст після шифрування:" << outputText << std::endl;
-*/
+	} while (!feof(inpointer));
+	fclose(inpointer);
+	std::cout << "Текст після шифрування:\n" << outputText << std::endl;
 	return outputText;
 }
 
-void output_printer(std::string outputText,char* infilename,char b)
+void output_printer(std::string outputText,char* infilename,char b,int line_num)
 {
 	FILE* outpointer;
 	char outfilename[30] = "encrypted";
-	char fincout[200];
-	char outputFinal[200];
 	int j = 0;
 	strcat(outfilename, infilename);
 	outpointer = fopen(outfilename, "a");
-	const char* text_buf = outputText.c_str();
-	strcpy(fincout,text_buf);
-	for(int i = 0; i < strlen(fincout);i++)
+	std::string finaloutput;
+	char ss;
+	while((ss = outputText[j]))
 	{
-		if(fincout[i] != b)
+		if(ss != b)
 		{
-			outputFinal[j] = fincout[i];
-			j++;
+			finaloutput = finaloutput + ss;
+		}
+		j++;
+	}
+	const char* text_buf = finaloutput.c_str();
+	fseek(outpointer, 0, SEEK_END);
+	fprintf(outpointer,"%s",text_buf);
+	fclose(outpointer);
+}
+char point_char_taker()
+{
+	char b;
+	std::cout << "Введіть букву яку хочете прибрати з новогу файлу:" << std::endl;
+	std::cin >> b;
+	return b;
+}
+void point_file_filler(char* infilename)
+{
+	FILE* inpointer;
+	std::string first_text, fintext;
+	inpointer = fopen(infilename, "a");
+	printf("Введіть текст (напишіть EXIT, щоб вийти):\n");
+	while (true) 
+	{
+		std::getline(std::cin, first_text);
+		if (first_text.compare("EXIT") == 0) 
+		{
+			break;
+		}
+		first_text = "\n" + first_text;
+		if(first_text.compare("\n") != 0)
+		{
+			const char* textbuf = first_text.c_str();
+			fseek(inpointer, 0, SEEK_END);
+			fprintf(inpointer,"%s",textbuf);
+			fflush(inpointer);
 		}
 	}
-	fprintf(outpointer,"%s",outputFinal);
-	fclose(outpointer);
+	fclose(inpointer);
+}
+int point_file_reader(char* infilename)
+{
+	char filefill[300];
+	FILE* inpointer;
+	inpointer = fopen(infilename, "r");
+	printf("Текст у файлі:\n");
+		do
+		{
+			fgets(filefill, 200, inpointer);
+			printf("%s", filefill);
+		} while (!feof(inpointer));
+	fclose(inpointer);
+	std::string compline;
+	std::cout << "\nЧи хочете ви додати текст?(+/-)" << std::endl;
+	std::cin >> compline;
+	if(compline.compare("+") == 0)
+	{
+		return 0;
+	}
+	return 1;
 }
 void final_point(std::string outputText, char* infilename)
 {

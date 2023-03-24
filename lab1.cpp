@@ -2,9 +2,9 @@
 #include <fstream>
 #include <string>
 #include <string.h>
+#include "encripting.cpp"
 #include "StreamFile.cpp"
 #include "PointerFile.cpp"
-
 
 int main(int argc, char* argv[])
 {
