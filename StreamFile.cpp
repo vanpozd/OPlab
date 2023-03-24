@@ -2,7 +2,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-//#include "encripting.cpp"
 
 void output(std::string,std::string,char,int);
 void finalout(std::string,std::string);

@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-#include "encripting.h"
 
 std::string encripting_stream(std::string inputstring)
 {
