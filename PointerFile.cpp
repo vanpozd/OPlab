@@ -73,10 +73,13 @@ void output_printer(std::string outputText,char* infilename,char b,int line_num)
 		}
 		j++;
 	}
-	const char* text_buf = finaloutput.c_str();
-	fseek(outpointer, 0, SEEK_END);
-	fprintf(outpointer,"%s",text_buf);
-	fclose(outpointer);
+	if(finaloutput.compare("\n") != 0)
+	{
+		const char* text_buf = finaloutput.c_str();
+		fseek(outpointer, 0, SEEK_END);
+		fprintf(outpointer,"%s",text_buf);
+		fclose(outpointer);
+	}
 }
 char point_char_taker()
 {
