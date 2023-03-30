@@ -144,7 +144,7 @@ int main()
 	{
 		std::ifstream file(filename, std::ios::binary);
 		std::cout << "\n====== Всі автівки салону ======\n" << std::endl;
-		while (!file.eof()) 
+		while (!file.eof()) //read file
 		{
             car c;
             file.read((char*)&c, sizeof(car));
@@ -164,15 +164,15 @@ int main()
 				}
 			}
         }
-		file.seekg(0);
+		file.close();
+		std::ifstream filer(filename, std::ios::binary);	//reopen file to read one more time
 		std::cout << "\n====== Автівки які надійшли останього місяця ======\n" << std::endl;
-		while (!file.eof()) 
+		while (!filer.eof()) //read file
 		{
             car c;
-            file.read((char*)&c, sizeof(car));
-            if (file.gcount() == sizeof(car) || c.get_month_income() == true)
+            filer.read((char*)&c, sizeof(car));
+            if (filer.gcount() == sizeof(car) && c.get_month_income() == true)
 			{
-				std::cout << "\n========================\n" << std::endl;
 				std::cout << "Назва: " << c.get_name() << std::endl;
 				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
 				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
@@ -184,8 +184,9 @@ int main()
 				{
 					std::cout << "Вживаний: ні" << std::endl;
 				}
+				std::cout << "\n========================\n" << std::endl;
 			}
         }
-		file.close();
+		filer.close();
 	}
 }
