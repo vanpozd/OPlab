@@ -106,7 +106,7 @@ int read_or_write(bool check)
 	int a;
 	if(check == true)
 	{
-		std::cout << "Оберіть дію:\n1)Дописати нові автівки у файл.\n2)Зчитати з файлу." << std::endl;
+		std::cout << "Оберіть дію:\n1)Дописати нові автівки у файл.\n2)Автомобілі, які надійшли останнього місяця." << std::endl;
 		std::cin >> a;
 	}
 	else
@@ -185,12 +185,12 @@ int main()
 	else if (a == 2)	//read from file
 	{
 		std::ifstream file(filename, std::ios::binary);
-		std::cout << "\n====== Всі автівки салону ======\n" << std::endl;
+		std::cout << "\n====== Автівки які надійшли останього місяця ======\n" << std::endl;
 		while (!file.eof()) //read file
 		{
             car c;
             file.read((char*)&c, sizeof(car));
-            if (file.gcount() == sizeof(car)) 
+            if (file.gcount() == sizeof(car) && c.get_month_income() == true)
 			{
 				std::cout << "Назва: " << c.get_name() << std::endl;
 				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
@@ -207,29 +207,6 @@ int main()
 			}
         }
 		file.close();
-		std::ifstream filer(filename, std::ios::binary);	//reopen file to read one more time
-		std::cout << "\n====== Автівки які надійшли останього місяця ======\n" << std::endl;
-		while (!filer.eof()) //read file
-		{
-            car c;
-            filer.read((char*)&c, sizeof(car));
-            if (filer.gcount() == sizeof(car) && c.get_month_income() == true)
-			{
-				std::cout << "Назва: " << c.get_name() << std::endl;
-				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
-				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
-				if(c.get_used_flg() == true)
-				{
-					std::cout << "Вживаний: так" << std::endl;
-				}
-				else
-				{
-					std::cout << "Вживаний: ні" << std::endl;
-				}
-				std::cout << "\n========================\n" << std::endl;
-			}
-        }
-		filer.close();
 	}
 	else if(a == 3)	 //new file fill
 	{
