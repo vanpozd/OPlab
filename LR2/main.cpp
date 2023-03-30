@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 
+std::string today;
 int days_in_date(std::string date)
 {
 	std::stringstream ss(date);
@@ -25,6 +26,7 @@ class car
 	std::string date_of_manufacture;
 	std::string sell_date;
 	bool used_flg;
+	bool month_income;
 	
 	public:
 	std::string get_name() const
@@ -56,31 +58,47 @@ class car
 		sell_date = date;
 	}
 	void set_used_flg()
+	{
+		if(days_in_date(sell_date) - days_in_date(date_of_manufacture) > 365)
 		{
-			if(days_in_date(date_of_manufacture) - days_in_date(sell_date) > 365)
-			{
-				used_flg = true;
-			}
-			else
-			{
-				used_flg = false;
-			}
+			used_flg = true;
 		}
+		else
+		{
+			used_flg = false;
+		}
+	}
+	void set_month_income()
+	{
+		if(days_in_date(today) - days_in_date(sell_date) < 30)
+		{
+			month_income = true;
+		}
+		else
+		{
+			month_income = false;
+		}
+	}
+	bool get_month_income()
+	{
+		return month_income;
+	}
 };
 car fill_car_data()
 {
 	car car1;
 	std::string token;
 	std::cout << "Введіть дані автівки:\nНазва: ";
-	getline(std::cin, token);
+	std::cin >> token;
 	car1.set_name(token);
-	std::cout << "\nДата випуску: ";
-	getline(std::cin, token);
+	std::cout << "Дата випуску: ";
+	std::cin >> token;
 	car1.set_date_of_manufacture(token);
-	std::cout << "\nДата купівлі: ";
-	getline(std::cin, token);
+	std::cout << "Дата надходження у продаж: ";
+	std::cin >> token;
 	car1.set_sell_date(token);
 	car1.set_used_flg();
+	car1.set_month_income();
 	return car1;
 }
 int read_or_write()
@@ -94,12 +112,18 @@ std::string infilename()
 {
 	std::string infilename;
 	std::cout << "Введіть назфу файлу: " << std::endl;
-	std::getline(std::cin, infilename);
+	std::cin >> infilename;
 	return infilename;
+}
+void today_date()
+{
+	std::cout << "Введіть сьогоднішню дату та місяць(dd.mm.yyyy)" << std::endl;
+	std::cin >> today;
 }
 
 int main()
 {
+	today_date();
 	std::string filename = infilename();
 	int a = read_or_write();
 	std::string compline;
@@ -110,15 +134,58 @@ int main()
 		{
 			car main_car;
 			main_car = fill_car_data();
+			file.write((char*)&main_car, sizeof(main_car));
 			std::cout << "Чи хочете ви додати ще одну автівку у список?(+/-)" << std::endl;
 			std::cin >> compline;
-			file.write((char*)&main_car, sizeof(main_car));
-			
 		}while(compline.compare("+") == 0);
 		file.close();
 	}
 	else if (a == 2)	//read from file
 	{
-
+		std::ifstream file(filename, std::ios::binary);
+		std::cout << "\n====== Всі автівки салону ======\n" << std::endl;
+		while (!file.eof()) 
+		{
+            car c;
+            file.read((char*)&c, sizeof(car));
+            if (file.gcount() == sizeof(car)) 
+			{
+				std::cout << "\n========================\n" << std::endl;
+				std::cout << "Назва: " << c.get_name() << std::endl;
+				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
+				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
+				if(c.get_used_flg() == true)
+				{
+					std::cout << "Вживаний: так" << std::endl;
+				}
+				else
+				{
+					std::cout << "Вживаний: ні" << std::endl;
+				}
+			}
+        }
+		file.seekg(0);
+		std::cout << "\n====== Автівки які надійшли останього місяця ======\n" << std::endl;
+		while (!file.eof()) 
+		{
+            car c;
+            file.read((char*)&c, sizeof(car));
+            if (file.gcount() == sizeof(car) || c.get_month_income() == true)
+			{
+				std::cout << "\n========================\n" << std::endl;
+				std::cout << "Назва: " << c.get_name() << std::endl;
+				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
+				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
+				if(c.get_used_flg() == true)
+				{
+					std::cout << "Вживаний: так" << std::endl;
+				}
+				else
+				{
+					std::cout << "Вживаний: ні" << std::endl;
+				}
+			}
+        }
+		file.close();
 	}
 }
