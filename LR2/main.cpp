@@ -2,23 +2,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "addition.cpp"
 
 std::string today;
-int days_in_date(std::string date)
-{
-	std::stringstream ss(date);
-	std::string token;
-
-	int day, month, year;
-	std::getline(ss, token, '.');
-	day = std::stoi(token);
-	std::getline(ss, token, '.');
-	month = std::stoi(token);
-	std::getline(ss, token, '.');
-	year = std::stoi(token);
-	int sum = day + (month * 30.425) + ((year * 12)*30.425);
-	return sum;
-}
 class car
 {
 	private:
@@ -101,21 +87,6 @@ car fill_car_data()
 	car1.set_month_income();
 	return car1;
 }
-int read_or_write(bool check)
-{
-	int a;
-	if(check == true)
-	{
-		std::cout << "Оберіть дію:\n1)Дописати нові автівки у файл.\n2)Автомобілі, які надійшли останнього місяця." << std::endl;
-		std::cin >> a;
-	}
-	else
-	{
-		std::cout << "Такого файлу ще не існує." << std::endl;
-		a = 3;
-	}
-	return a;
-}
 std::string infilename()
 {
 	std::string infilename;
@@ -146,7 +117,7 @@ bool file_exist(std::string filename)
 			{
 				std::cout << "Назва: " << c.get_name() << std::endl;
 				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
-				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
+				std::cout << "Дата надходження: " << c.get_sell_date() << std::endl;
 				if(c.get_used_flg() == true)
 				{
 					std::cout << "Вживаний: так" << std::endl;
@@ -194,7 +165,7 @@ int main()
 			{
 				std::cout << "Назва: " << c.get_name() << std::endl;
 				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
-				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
+				std::cout << "Дата надходження: " << c.get_sell_date() << std::endl;
 				if(c.get_used_flg() == true)
 				{
 					std::cout << "Вживаний: так" << std::endl;
