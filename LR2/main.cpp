@@ -101,17 +101,25 @@ car fill_car_data()
 	car1.set_month_income();
 	return car1;
 }
-int read_or_write()
+int read_or_write(bool check)
 {
 	int a;
-	std::cout << "Оберіть дію:\n1)Записати у файл.\n2)Зчитати з файлу." << std::endl;
-	std::cin >> a;
+	if(check == true)
+	{
+		std::cout << "Оберіть дію:\n1)Дописати нові автівки у файл.\n2)Зчитати з файлу." << std::endl;
+		std::cin >> a;
+	}
+	else
+	{
+		std::cout << "Такого файлу ще не існує." << std::endl;
+		a = 3;
+	}
 	return a;
 }
 std::string infilename()
 {
 	std::string infilename;
-	std::cout << "Введіть назфу файлу: " << std::endl;
+	std::cout << "Введіть назву файлу: " << std::endl;
 	std::cin >> infilename;
 	return infilename;
 }
@@ -120,16 +128,50 @@ void today_date()
 	std::cout << "Введіть сьогоднішню дату та місяць(dd.mm.yyyy)" << std::endl;
 	std::cin >> today;
 }
+bool file_exist(std::string filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		return 0;
+	}
+	else
+	{
+		std::cout << "Такий файл існує.\n====== Всі автівки салону ======\n" << std::endl;
+		while (!file.eof()) //read file
+		{
+			car c;
+			file.read((char*)&c, sizeof(car));
+			if (file.gcount() == sizeof(car)) 
+			{
+				std::cout << "Назва: " << c.get_name() << std::endl;
+				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
+				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
+				if(c.get_used_flg() == true)
+				{
+					std::cout << "Вживаний: так" << std::endl;
+				}
+				else
+				{
+					std::cout << "Вживаний: ні" << std::endl;
+				}
+				std::cout << "\n========================\n" << std::endl;
+			}
+		}
+		file.close();
+		return 1;
+	}
+}
 
 int main()
 {
-	today_date();
 	std::string filename = infilename();
-	int a = read_or_write();
+	int a = read_or_write(file_exist(filename));
 	std::string compline;
-	if(a == 1)	 //write in file
+	if(a == 1)	 //append in file
 	{
-		std::ofstream file(filename, std::ios::binary);
+		today_date();
+		std::ofstream file(filename, std::ios_base::app | std::ios_base::binary);
 		do
 		{
 			car main_car;
@@ -150,7 +192,6 @@ int main()
             file.read((char*)&c, sizeof(car));
             if (file.gcount() == sizeof(car)) 
 			{
-				std::cout << "\n========================\n" << std::endl;
 				std::cout << "Назва: " << c.get_name() << std::endl;
 				std::cout << "Дата випуску: " << c.get_date_of_manufacture() << std::endl;
 				std::cout << "Дата продажу: " << c.get_sell_date() << std::endl;
@@ -162,6 +203,7 @@ int main()
 				{
 					std::cout << "Вживаний: ні" << std::endl;
 				}
+				std::cout << "\n========================\n" << std::endl;
 			}
         }
 		file.close();
@@ -188,5 +230,19 @@ int main()
 			}
         }
 		filer.close();
+	}
+	else if(a == 3)	 //new file fill
+	{
+		today_date();
+		std::ofstream file(filename,std::ios_base::binary);
+		do
+		{
+			car main_car;
+			main_car = fill_car_data();
+			file.write((char*)&main_car, sizeof(main_car));
+			std::cout << "Чи хочете ви додати ще одну автівку у список?(+/-)" << std::endl;
+			std::cin >> compline;
+		}while(compline.compare("+") == 0);
+		file.close();
 	}
 }
