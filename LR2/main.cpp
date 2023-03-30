@@ -96,7 +96,7 @@ std::string infilename()
 }
 void today_date()
 {
-	std::cout << "Введіть сьогоднішню дату та місяць(dd.mm.yyyy)" << std::endl;
+	std::cout << "Введіть сьогоднішню дату(dd.mm.yyyy)" << std::endl;
 	std::cin >> today;
 }
 bool file_exist(std::string filename)
