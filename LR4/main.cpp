@@ -1,5 +1,6 @@
 #include "point.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 
 point doter();
@@ -25,9 +26,12 @@ int main()
 
 point doter()
 {
-	int x, y;
-	std::cin >> x;
-	std::cin >> y;
+	int x = 0;
+	int y = 0;
+	std::string input;
+	getline(std::cin, input);
+	std::stringstream ss(input);
+	ss >> x >> y;
 	point dot(x,y);
 	return dot;
 	/*
@@ -41,7 +45,7 @@ point doter()
 		point dot(x);
 		return dot;
 	}
-	else if (x != 0 && y != 0)
+	else
 	{
 		point dot(x,y);
 		return dot;
