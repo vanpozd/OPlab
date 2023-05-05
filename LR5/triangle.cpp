@@ -64,7 +64,10 @@ double TTriangle::square()
 	double s = (a + b + c) / 2;
 	return sqrt(s * (s - a) * (s - b) * (s - c));
 }
-
+double TItriangle::square()
+{
+	return 1.5;
+}
 TTriangle::TTriangle() : vertex1(randint(), randint()), vertex2(randint(), randint()), vertex3(randint(), randint()) {}
 TRtriangle::TRtriangle() : TTriangle() 
 {

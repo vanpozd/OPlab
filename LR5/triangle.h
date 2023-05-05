@@ -38,7 +38,7 @@ class TTriangle
 	int get_1axisY();
 	int get_2axisY();
 	int get_3axisY();
-	double square();
+	virtual double square();
 };
 class TRtriangle : public TTriangle //прямокутний
 {
@@ -52,6 +52,7 @@ class TItriangle : public TTriangle //рівнобедренний
 
 	TItriangle();
 	double perimeter();
+	double square();
 };
 class TEtriangle : public TTriangle //рівносторонній
 {
