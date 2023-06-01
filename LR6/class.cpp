@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 template <typename T>
 struct Element 
@@ -71,7 +72,7 @@ public:
             newElement->prev = tail;
             tail = newElement;
         }
-
+        iterator = newElement;
         size++;
     }
 
