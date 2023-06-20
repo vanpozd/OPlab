@@ -46,7 +46,7 @@ public:
         {
             if (current->value == value)
             {
-                return position;
+                return position + 1;
             }
             current = current->next;
             position++;
